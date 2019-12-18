@@ -1,5 +1,7 @@
 package cool.compiler;
 
+import cool.nodes.*;
+
 public interface ASTVisitor<T> {
     T visit(Id id);
     T visit(Int id);

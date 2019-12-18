@@ -1,5 +1,6 @@
 package cool.compiler;
 
+import cool.nodes.*;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
@@ -8,7 +9,6 @@ import cool.parser.*;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class Compiler {
@@ -356,282 +356,284 @@ public class Compiler {
 
         var ast = astConstructionVisitor.visit(globalTree);
 
-        var printVisitor = new ASTVisitor<Void>() {
-            int indent = 0;
+//        var printVisitor = new ASTVisitor<Void>() {
+//            int indent = 0;
+//
+//            void printIndent(String str) {
+//                for (int i = 0; i < indent; i++)
+//                    System.out.print("  ");
+//                System.out.println(str);
+//            }
+//
+//            @Override
+//            public Void visit(Id id) {
+//                printIndent(id.token.getText());
+//                return null;
+//            }
+//
+//            @Override
+//            public Void visit(Int id) {
+//                printIndent(id.token.getText());
+//                return null;
+//            }
+//
+//            @Override
+//            public Void visit(StringNode id) {
+//                printIndent(id.token.getText());
+//                return null;
+//            }
+//
+//            @Override
+//            public Void visit(Bool id) {
+//                printIndent(id.token.getText());
+//                return null;
+//            }
+//
+//            @Override
+//            public Void visit(If id) {
+//                printIndent("if");
+//                indent++;
+//                id.cond.accept(this);
+//                id.thenBranch.accept(this);
+//                id.elseBranch.accept(this);
+//                indent--;
+//                return null;
+//            }
+//
+//            @Override
+//            public Void visit(Assignment id) {
+//                printIndent("<-");
+//                indent++;
+//                printIndent(id.varName.getText());
+//                id.value.accept(this);
+//                indent--;
+//                return null;
+//            }
+//
+//            private Void printBinarOp(Token op, Expression left, Expression right) {
+//                printIndent(op.getText());
+//                indent++;
+//                left.accept(this);
+//                right.accept(this);
+//                indent--;
+//                return null;
+//            }
+//
+//
+//            @Override
+//            public Void visit(AddSub id) {
+//                return printBinarOp(id.op, id.left, id.right);
+//            }
+//
+//            @Override
+//            public Void visit(MulDiv id) {
+//                return printBinarOp(id.op, id.left, id.right);
+//            }
+//
+//            @Override
+//            public Void visit(Comparasion id) {
+//                return printBinarOp(id.op, id.left, id.right);
+//            }
+//
+//            @Override
+//            public Void visit(IsVoid id) {
+//                printIndent(id.op.getText());
+//                indent++;
+//                id.void_expr.accept(this);
+//                indent--;
+//                return null;
+//            }
+//
+//            @Override
+//            public Void visit(Neg id) {
+//                printIndent(id.op.getText());
+//                indent++;
+//                id.value.accept(this);
+//                indent--;
+//                return null;
+//            }
+//
+//            @Override
+//            public Void visit(Not id) {
+//                printIndent(id.op.getText());
+//                indent++;
+//                id.value.accept(this);
+//                indent--;
+//                return null;
+//            }
+//
+//            @Override
+//            public Void visit(Program id) {
+//                printIndent("program");
+//                indent++;
+//                for (ClassNode cClass : id.classes) {
+//                    cClass.accept(this);
+//                }
+//                indent--;
+//                return null;
+//            }
+//
+//            @Override
+//            public Void visit(ClassNode id) {
+//                printIndent("class");
+//                indent++;
+//                printIndent(id.className.getText());
+//                if (id.inheritClass != null) {
+//                    printIndent(id.inheritClass.getText());
+//                }
+//                for (Feature feature : id.features) {
+//                    feature.accept(this);
+//                }
+//                indent--;
+//                return null;
+//            }
+//
+//            @Override
+//            public Void visit(FuncFeature id) {
+//                printIndent("method");
+//                indent++;
+//                printIndent(id.id.getText());
+//                for (Formal f : id.paramList) {
+//                    f.accept(this);
+//                }
+//                printIndent(id.returnType.getText());
+//                id.body.accept(this);
+//                indent--;
+//                return null;
+//            }
+//
+//            @Override
+//            public Void visit(VarFeature id) {
+//                printIndent("attribute");
+//                indent++;
+//                printIndent(id.id.getText());
+//                printIndent(id.type.getText());
+//                if (id.value != null) {
+//                    id.value.accept(this);
+//                }
+//                indent--;
+//                return null;
+//            }
+//
+//            @Override
+//            public Void visit(Formal id) {
+//                printIndent("formal");
+//                indent++;
+//                printIndent(id.id.getText());
+//                printIndent(id.type.getText());
+//                indent--;
+//                return null;
+//            }
+//
+//            @Override
+//            public Void visit(Case id) {
+//                printIndent("case");
+//                indent++;
+//                id.case_value.accept(this);
+//                for (CaseRule c : id.branch_cases) {
+//                    c.accept(this);
+//                }
+//                indent--;
+//                return null;
+//            }
+//
+//            @Override
+//            public Void visit(CaseRule id) {
+//                printIndent("case branch");
+//                indent++;
+//                printIndent(id.id.getText());
+//                printIndent(id.type.getText());
+//                id.block.accept(this);
+//                indent--;
+//                return null;
+//            }
+//
+//            @Override
+//            public Void visit(Block id) {
+//                printIndent("block");
+//                indent++;
+//                for (Expression expr : id.exprList) {
+//                    expr.accept(this);
+//                }
+//                indent--;
+//                return null;
+//            }
+//
+//            @Override
+//            public Void visit(Instantiate id) {
+//                printIndent("new");
+//                indent++;
+//                printIndent(id.type.getText());
+//                indent--;
+//                return null;
+//            }
+//
+//            @Override
+//            public Void visit(While id) {
+//                printIndent("while");
+//                indent++;
+//                id.cond.accept(this);
+//                id.block.accept(this);
+//                indent--;
+//                return null;
+//            }
+//
+//            @Override
+//            public Void visit(FCall id) {
+//                printIndent("implicit dispatch");
+//                indent++;
+//                printIndent(id.id.getText());
+//                for (Expression arg : id.arglst) {
+//                    arg.accept(this);
+//                }
+//                indent--;
+//                return null;
+//            }
+//
+//            @Override
+//            public Void visit(ComplexFCall id) {
+//                printIndent(".");
+//                indent++;
+//                id.caller.accept(this);
+//                if (id.type != null) {
+//                    printIndent(id.type.getText());
+//                }
+//                printIndent(id.id.getText());
+//                for (Expression arg : id.arglst) {
+//                    arg.accept(this);
+//                }
+//                indent--;
+//                return null;
+//            }
+//
+//            @Override
+//            public Void visit(Let id) {
+//                printIndent("let");
+//                indent++;
+//                for (LetDecl l : id.vars) {
+//                    l.accept(this);
+//                }
+//                id.body.accept(this);
+//                indent--;
+//                return null;
+//            }
+//
+//            @Override
+//            public Void visit(LetDecl id) {
+//                printIndent("local");
+//                indent++;
+//                printIndent(id.id.getText());
+//                printIndent(id.type.getText());
+//                if (id.value != null) {
+//                    id.value.accept(this);
+//                }
+//                indent--;
+//                return null;
+//            }
+//        };
 
-            void printIndent(String str) {
-                for (int i = 0; i < indent; i++)
-                    System.out.print("  ");
-                System.out.println(str);
-            }
+        var definitionPassVisitor = new DefinitionPassVisitor();
 
-            @Override
-            public Void visit(Id id) {
-                printIndent(id.token.getText());
-                return null;
-            }
-
-            @Override
-            public Void visit(Int id) {
-                printIndent(id.token.getText());
-                return null;
-            }
-
-            @Override
-            public Void visit(StringNode id) {
-                printIndent(id.token.getText());
-                return null;
-            }
-
-            @Override
-            public Void visit(Bool id) {
-                printIndent(id.token.getText());
-                return null;
-            }
-
-            @Override
-            public Void visit(If id) {
-                printIndent("if");
-                indent++;
-                id.cond.accept(this);
-                id.thenBranch.accept(this);
-                id.elseBranch.accept(this);
-                indent--;
-                return null;
-            }
-
-            @Override
-            public Void visit(Assignment id) {
-                printIndent("<-");
-                indent++;
-                printIndent(id.varName.getText());
-                id.value.accept(this);
-                indent--;
-                return null;
-            }
-
-            private Void printBinarOp(Token op, Expression left, Expression right) {
-                printIndent(op.getText());
-                indent++;
-                left.accept(this);
-                right.accept(this);
-                indent--;
-                return null;
-            }
-
-
-            @Override
-            public Void visit(AddSub id) {
-                return printBinarOp(id.op, id.left, id.right);
-            }
-
-            @Override
-            public Void visit(MulDiv id) {
-                return printBinarOp(id.op, id.left, id.right);
-            }
-
-            @Override
-            public Void visit(Comparasion id) {
-                return printBinarOp(id.op, id.left, id.right);
-            }
-
-            @Override
-            public Void visit(IsVoid id) {
-                printIndent(id.op.getText());
-                indent++;
-                id.void_expr.accept(this);
-                indent--;
-                return null;
-            }
-
-            @Override
-            public Void visit(Neg id) {
-                printIndent(id.op.getText());
-                indent++;
-                id.value.accept(this);
-                indent--;
-                return null;
-            }
-
-            @Override
-            public Void visit(Not id) {
-                printIndent(id.op.getText());
-                indent++;
-                id.value.accept(this);
-                indent--;
-                return null;
-            }
-
-            @Override
-            public Void visit(Program id) {
-                printIndent("program");
-                indent++;
-                for (ClassNode cClass : id.classes) {
-                    cClass.accept(this);
-                }
-                indent--;
-                return null;
-            }
-
-            @Override
-            public Void visit(ClassNode id) {
-                printIndent("class");
-                indent++;
-                printIndent(id.className.getText());
-                if (id.inheritClass != null) {
-                    printIndent(id.inheritClass.getText());
-                }
-                for (Feature feature : id.features) {
-                    feature.accept(this);
-                }
-                indent--;
-                return null;
-            }
-
-            @Override
-            public Void visit(FuncFeature id) {
-                printIndent("method");
-                indent++;
-                printIndent(id.id.getText());
-                for (Formal f : id.paramList) {
-                    f.accept(this);
-                }
-                printIndent(id.returnType.getText());
-                id.body.accept(this);
-                indent--;
-                return null;
-            }
-
-            @Override
-            public Void visit(VarFeature id) {
-                printIndent("attribute");
-                indent++;
-                printIndent(id.id.getText());
-                printIndent(id.type.getText());
-                if (id.value != null) {
-                    id.value.accept(this);
-                }
-                indent--;
-                return null;
-            }
-
-            @Override
-            public Void visit(Formal id) {
-                printIndent("formal");
-                indent++;
-                printIndent(id.id.getText());
-                printIndent(id.type.getText());
-                indent--;
-                return null;
-            }
-
-            @Override
-            public Void visit(Case id) {
-                printIndent("case");
-                indent++;
-                id.case_value.accept(this);
-                for (CaseRule c : id.branch_cases) {
-                    c.accept(this);
-                }
-                indent--;
-                return null;
-            }
-
-            @Override
-            public Void visit(CaseRule id) {
-                printIndent("case branch");
-                indent++;
-                printIndent(id.id.getText());
-                printIndent(id.type.getText());
-                id.block.accept(this);
-                indent--;
-                return null;
-            }
-
-            @Override
-            public Void visit(Block id) {
-                printIndent("block");
-                indent++;
-                for (Expression expr : id.exprList) {
-                    expr.accept(this);
-                }
-                indent--;
-                return null;
-            }
-
-            @Override
-            public Void visit(Instantiate id) {
-                printIndent("new");
-                indent++;
-                printIndent(id.type.getText());
-                indent--;
-                return null;
-            }
-
-            @Override
-            public Void visit(While id) {
-                printIndent("while");
-                indent++;
-                id.cond.accept(this);
-                id.block.accept(this);
-                indent--;
-                return null;
-            }
-
-            @Override
-            public Void visit(FCall id) {
-                printIndent("implicit dispatch");
-                indent++;
-                printIndent(id.id.getText());
-                for (Expression arg : id.arglst) {
-                    arg.accept(this);
-                }
-                indent--;
-                return null;
-            }
-
-            @Override
-            public Void visit(ComplexFCall id) {
-                printIndent(".");
-                indent++;
-                id.caller.accept(this);
-                if (id.type != null) {
-                    printIndent(id.type.getText());
-                }
-                printIndent(id.id.getText());
-                for (Expression arg : id.arglst) {
-                    arg.accept(this);
-                }
-                indent--;
-                return null;
-            }
-
-            @Override
-            public Void visit(Let id) {
-                printIndent("let");
-                indent++;
-                for (LetDecl l : id.vars) {
-                    l.accept(this);
-                }
-                id.body.accept(this);
-                indent--;
-                return null;
-            }
-
-            @Override
-            public Void visit(LetDecl id) {
-                printIndent("local");
-                indent++;
-                printIndent(id.id.getText());
-                printIndent(id.type.getText());
-                if (id.value != null) {
-                    id.value.accept(this);
-                }
-                indent--;
-                return null;
-            }
-        };
-
-        ast.accept(printVisitor);
+        ast.accept(definitionPassVisitor);
     }
 }
