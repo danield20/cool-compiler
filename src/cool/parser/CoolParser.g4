@@ -44,9 +44,9 @@ expr
     | NEW TYPE                                                                          # instantiate
     | ISVOID value=expr                                                                 # isvoid
     | LPAREN value=expr RPAREN                                                          # parenthesized
+    | NEG value=expr                                                                    # neg
     | left=expr (MULT | DIV) right=expr                                                 # mulDiv
     | left=expr (PLUS | MINUS) right=expr                                               # addSub
-    | NEG value=expr                                                                    # neg
     | left=expr (LT | LE | EQUAL) right=expr                                            # comparison
     | NOT value=expr                                                                    # not
     | ID ASSIGN value=expr                                                              # assignment

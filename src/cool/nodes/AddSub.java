@@ -1,6 +1,7 @@
 package cool.nodes;
 
 import cool.compiler.ASTVisitor;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public class AddSub extends Expression {
@@ -8,8 +9,8 @@ public class AddSub extends Expression {
     public Expression right;
     public Token op;
 
-    public AddSub(Expression left, Token op, Expression right, Token start) {
-        super(start);
+    public AddSub(Expression left, Token op, Expression right, Token start, ParserRuleContext ctx) {
+        super(start, ctx);
         this.left = left;
         this.op = op;
         this.right = right;

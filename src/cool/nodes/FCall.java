@@ -1,17 +1,18 @@
 package cool.nodes;
 
 import cool.compiler.ASTVisitor;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 import java.util.ArrayList;
 
 public class FCall extends Expression {
-    public Token id;
+    public Id id;
     public ArrayList<Expression> arglst;
 
-    public FCall(Token token, Token id, ArrayList<Expression> arglst) {
-        super(token);
-        this.id = id;
+    public FCall(Token token, ParserRuleContext ctx, Token id, ArrayList<Expression> arglst) {
+        super(token, ctx);
+        this.id = new Id(id, ctx);
         this.arglst = arglst;
     }
 

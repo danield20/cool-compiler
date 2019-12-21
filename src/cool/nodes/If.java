@@ -1,6 +1,7 @@
 package cool.nodes;
 
 import cool.compiler.ASTVisitor;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public class If extends Expression {
@@ -8,8 +9,8 @@ public class If extends Expression {
     public Expression thenBranch;
     public Expression elseBranch;
 
-    public If(Expression cond, Expression thenBranch, Expression elseBranch, Token start) {
-        super(start);
+    public If(Expression cond, Expression thenBranch, Expression elseBranch, Token start, ParserRuleContext ctx) {
+        super(start, ctx);
         this.cond = cond;
         this.thenBranch = thenBranch;
         this.elseBranch = elseBranch;

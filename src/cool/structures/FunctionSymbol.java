@@ -2,37 +2,43 @@ package cool.structures;
 
 import java.util.*;
 
-public class DefaultScope implements Scope {
-    
+public class FunctionSymbol extends IdSymbol implements Scope {
+
     public Map<String, Symbol> symbols = new LinkedHashMap<>();
-    
-    private Scope parent;
-    
-    public DefaultScope(Scope parent) {
+
+    protected Scope parent;
+
+    protected ClassSymbol returnType;
+
+    public FunctionSymbol(Scope parent, String name) {
+        super(name);
         this.parent = parent;
     }
 
     @Override
     public boolean add(Symbol sym) {
-        // Reject duplicates in the same scope.
+        // Ne asigurăm că simbolul nu există deja în domeniul de vizibilitate
+        // curent.
         if (symbols.containsKey(sym.getName()))
             return false;
-        
+
         symbols.put(sym.getName(), sym);
-        
+
         return true;
     }
 
     @Override
-    public Symbol lookup(String name) {
-        var sym = symbols.get(name);
-        
+    public Symbol lookup(String s) {
+        var sym = symbols.get(s);
+
         if (sym != null)
             return sym;
-        
+
+        // Dacă nu găsim simbolul în domeniul de vizibilitate curent, îl căutăm
+        // în domeniul de deasupra.
         if (parent != null)
-            return parent.lookup(name);
-        
+            return parent.lookup(s);
+
         return null;
     }
 
@@ -49,10 +55,8 @@ public class DefaultScope implements Scope {
     public Scope getParent() {
         return parent;
     }
-    
-    @Override
-    public String toString() {
-        return symbols.values().toString();
-    }
 
+    public Map<String, Symbol> getFormals() {
+        return symbols;
+    }
 }

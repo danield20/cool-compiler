@@ -1,6 +1,7 @@
 package cool.tester;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.HashSet;
 
 import cool.compiler.Compiler;
@@ -21,8 +22,10 @@ public class Tester2 {
         var oldErr = System.err;
         
         var total = 0;
+        var files = testDir.listFiles(filenameFilter);
+        Arrays.sort(files, (f1, f2) -> f1.compareTo(f2));
         
-        for (var file : testDir.listFiles(filenameFilter)) {
+        for (var file : files) {
             var inPath = file.getPath();
             var outPath = inPath.replace(".cl", ".out");
             var newOut = new PrintStream(outPath, "UTF-8");

@@ -1,15 +1,16 @@
 package cool.nodes;
 
 import cool.compiler.ASTVisitor;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public class Assignment extends Expression {
-    public Token varName;
+    public Id id;
     public Expression value;
 
-    public Assignment(Token var, Expression val, Token start) {
-        super(start);
-        varName = var;
+    public Assignment(Token var, Expression val, Token start, ParserRuleContext ctx) {
+        super(start, ctx);
+        id = new Id(var, ctx);
         value = val;
     }
 

@@ -1,14 +1,15 @@
 package cool.nodes;
 
 import cool.compiler.ASTVisitor;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public class Neg extends Expression {
     public Token op;
     public Expression value;
 
-    public Neg(Token op, Expression value, Token token) {
-        super(token);
+    public Neg(Token op, Expression value, Token token, ParserRuleContext ctx) {
+        super(token, ctx);
         this.op = op;
         this.value = value;
     }
