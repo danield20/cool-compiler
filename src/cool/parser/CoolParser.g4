@@ -4,9 +4,9 @@ options {
     tokenVocab = CoolLexer;
 }
 
-//@header{
-//    package cool.parser;
-//}
+@header{
+    package cool.parser;
+}
 
 program
     : (classG SEMI)+

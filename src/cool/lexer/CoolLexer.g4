@@ -2,9 +2,9 @@ lexer grammar CoolLexer;
 
 tokens { ERROR } 
 
-//@header{
-//    package cool.lexer;
-//}
+@header{
+    package cool.lexer;
+}
 
 @members {
     private void raiseError(String msg) {

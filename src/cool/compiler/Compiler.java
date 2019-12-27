@@ -609,7 +609,7 @@ public class Compiler {
 //                if (id.type != null) {
 //                    printIndent(id.type.getText());
 //                }
-//                printIndent(id.id.getText());
+//                printIndent(id.id.getToken().getText());
 //                for (Expression arg : id.arglst) {
 //                    arg.accept(this);
 //                }
@@ -645,8 +645,6 @@ public class Compiler {
 //
 //        ast.accept(printVisitor);
 
-        //Populate global scope.
-
         SymbolTable.defineBasicClasses();
 
         var definitionPassVisitor = new DefinitionPassVisitor();
@@ -660,5 +658,9 @@ public class Compiler {
         if (SymbolTable.hasSemanticErrors()) {
             System.err.println("Compilation halted");
         }
+
+        var codeGen = new CodeGenVisitor();
+        var t = ast.accept(codeGen);
+        System.out.println(t.render());
     }
 }
