@@ -2,9 +2,9 @@ lexer grammar CoolLexer;
 
 tokens { ERROR } 
 
-@header{
-    package cool.lexer;
-}
+//@header{
+//    package cool.lexer;
+//}
 
 @members {
     private void raiseError(String msg) {
@@ -82,7 +82,7 @@ fragment INSIDEID : (LETTER | '_' | DIGIT)*;
 
 ID : [a-z] INSIDEID;
 INT : DIGIT+;
-FLOAT : (DIGITS ('.' DIGITS?)? | '.' DIGITS) EXPONENT?;
+FLOAT : (DIGITS ('.' DIGITS)? | '.' DIGITS) EXPONENT?;
 
 fragment ESCAPED_NEWLINE : '\\' NEW_LINE;
 STRING : '"' (ESCAPED_NEWLINE | .)*? (  '"'

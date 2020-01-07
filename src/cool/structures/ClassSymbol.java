@@ -1,6 +1,8 @@
 package cool.structures;
 
-import org.antlr.v4.runtime.*;
+import cool.nodes.ClassNode;
+import cool.nodes.FuncFeature;
+import cool.nodes.VarFeature;
 
 import java.util.*;
 

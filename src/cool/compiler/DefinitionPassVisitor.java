@@ -207,6 +207,7 @@ public class DefinitionPassVisitor implements ASTVisitor<ClassSymbol> {
     public ClassSymbol visit(Let lt) {
         var newScope = new LetScope(currentScope);
         currentScope = newScope;
+        lt.setScope(currentScope);
 
         for (LetDecl ldc : lt.vars) {
             ldc.accept(this);
@@ -327,6 +328,27 @@ public class DefinitionPassVisitor implements ASTVisitor<ClassSymbol> {
             }
         }
 
+        if (currentScope.lookup(id.textInScope) == null) {
+            //look into inherited
+            Scope getClass = currentScope.getParent();
+
+            while (!(getClass instanceof ClassSymbol) && getClass != null) {
+                getClass = getClass.getParent();
+            }
+
+            if (getClass != null) {
+                ClassSymbol parentClass = (ClassSymbol) getClass;
+                while (parentClass != ClassSymbol.NULL_CLASS) {
+                    if (parentClass.lookup(id.textInScope) != null) {
+                        id.setScope(currentScope);
+                        id.setSymbol(parentClass.lookup(id.textInScope));
+                        return null;
+                    }
+                    parentClass = parentClass.getParentClass();
+                }
+            }
+        }
+
         id.setScope(currentScope);
         id.setSymbol(currentScope.lookup(id.textInScope));
 
@@ -375,6 +397,8 @@ public class DefinitionPassVisitor implements ASTVisitor<ClassSymbol> {
 
     @Override
     public ClassSymbol visit(IsVoid id) {
+        id.id.setScope(currentScope);
+        id.void_expr.accept(this);
         return null;
     }
 

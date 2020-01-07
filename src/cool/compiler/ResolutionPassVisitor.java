@@ -340,10 +340,10 @@ public class ResolutionPassVisitor implements ASTVisitor<ClassSymbol> {
             return ((IdSymbol)currentScope.lookup("self")).getType();
         }
 
-        if (currentScope.lookup(id.textInScope) == null) {
-            SymbolTable.error(id.ctx, id.getToken(), "Undefined identifier " + id.textInScope);
-            return null;
-        }
+//        if (currentScope.lookup(id.textInScope) == null) {
+//            SymbolTable.error(id.ctx, id.getToken(), "Undefined identifier " + id.textInScope);
+//            return null;
+//        }
 
         return ((IdSymbol)id.getSymbol()).getType();
     }
@@ -615,7 +615,6 @@ public class ResolutionPassVisitor implements ASTVisitor<ClassSymbol> {
         for (int i = 0; i < current.size(); i++) {
             var initialType = ((IdSymbol) current.get(i)).getType();
             var callType = fc.arglst.get(i).accept(this);
-
             if (!initialType.isParentOrEqual(callType)) {
                 SymbolTable.error(id.ctx, fc.arglst.get(i).getToken(), "In call to method " +
                         id.getToken().getText() + " of class " + parentScope.getName() +
@@ -632,6 +631,7 @@ public class ResolutionPassVisitor implements ASTVisitor<ClassSymbol> {
         if (defaultFunctionTypes != null && (functionScope).getType().getName().compareTo("SELF_TYPE") == 0) {
             return defaultFunctionTypes;
         }
+
         return functionScope.getType();
     }
 
@@ -662,6 +662,17 @@ public class ResolutionPassVisitor implements ASTVisitor<ClassSymbol> {
                 return null;
             }
 
+            if (callerType.getName().compareTo("SELF_TYPE") == 0) {
+                // get parent class of the call
+                Scope getClass = id.getScope() instanceof ClassSymbol ? id.getScope() : id.getScope().getParent();
+
+                while (!(getClass instanceof ClassSymbol) && getClass != null) {
+                    getClass = getClass.getParent();
+                }
+
+                callerType = (ClassSymbol)getClass;
+            }
+
             if (!parentScope.isParentOrEqual(callerType)) {
                 SymbolTable.error(id.ctx, type, "Type " + type.getText() + " of static dispatch "
                         + "is not a superclass of type " + callerType.getName());
@@ -676,7 +687,7 @@ public class ResolutionPassVisitor implements ASTVisitor<ClassSymbol> {
                 getClass = getClass.getParent();
             }
 
-            if (caller.getToken().getText().compareTo("self") == 0) {
+            if (callerType.getName().compareTo("SELF_TYPE") == 0) {
                 parentScope = (ClassSymbol) getClass;
             } else {
                 parentScope = caller.accept(this);
@@ -707,6 +718,7 @@ public class ResolutionPassVisitor implements ASTVisitor<ClassSymbol> {
         }
 
 
+
         // search in args
         List<Symbol> current = new ArrayList<>(functionScope.symbols.values());
 
@@ -723,7 +735,6 @@ public class ResolutionPassVisitor implements ASTVisitor<ClassSymbol> {
         for (int i = 0; i < current.size(); i++) {
             var initialType = ((IdSymbol) current.get(i)).getType();
             var callType = arglst.get(i).accept(this);
-
             if (!initialType.isParentOrEqual(callType)) {
                 SymbolTable.error(id.ctx, arglst.get(i).getToken(), "In call to method " +
                         id.getToken().getText() + " of class " + parentScope.getName() +

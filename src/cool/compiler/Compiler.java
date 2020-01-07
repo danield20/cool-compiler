@@ -10,6 +10,7 @@ import cool.parser.*;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class Compiler {
@@ -48,7 +49,7 @@ public class Compiler {
                 tokenStream.setTokenSource(lexer);
 
 
-            // Test lexer only.
+             //Test lexer only.
 //            tokenStream.fill();
 //            List<Token> tokens = tokenStream.getTokens();
 //            tokens.stream().forEach(token -> {
@@ -659,7 +660,9 @@ public class Compiler {
             System.err.println("Compilation halted");
         }
 
-        var codeGen = new CodeGenVisitor();
+        var parseList = args[0].split("/");
+        var clName = parseList[parseList.length - 1];
+        var codeGen = new CodeGenVisitor(clName);
         var t = ast.accept(codeGen);
         System.out.println(t.render());
     }
